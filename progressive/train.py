@@ -84,38 +84,46 @@ def main():
         '--flip', action='store_true',
         help='if specified, randomly flip image horizontally'
     )
-    parser.add_argument('--batchsize', '-b', type=int, default=16)
-    parser.add_argument('--max_iter', '-m', type=int, default=400000)
-    parser.add_argument('--max_ch', '-c', type=int, default=512)
-    parser.add_argument('--n_hidden', type=int, default=512)
-    parser.add_argument('--size', type=int, default=128)
-    parser.add_argument('--max_stage', '-s', type=int, default=10)
-    parser.add_argument('--gpu', '-g', type=int, default=0,
-                        help='GPU ID (negative value indicates CPU)')
+    parser.add_argument('--batchsize', '-b', type=int, default=16,
+                        help='default=16')
+    parser.add_argument('--max_iter', '-m', type=int, default=400000,
+                        help='default=400000')
+    parser.add_argument('--max_ch', '-c', type=int, default=512,
+                        help='default=512')
+    parser.add_argument('--n_hidden', type=int, default=512,
+                        help='default=512')
+    parser.add_argument('--size', type=int, default=128,
+                        help='default=128')
+    parser.add_argument('--max_stage', '-s', type=int, default=10,
+                        help='default=10')
+    parser.add_argument('--gpu', '-g', type=int, default=-1,
+                        help='GPU ID (negative value indicates CPU) (default=-1)')
     parser.add_argument('--out', '-o', default='result',
-                        help='Directory to output the result')
-    parser.add_argument('--snapshot_interval', type=int, default=25000,
-                        help='Interval of snapshot')
+                        help='Directory to output the result (default=result)')
+    parser.add_argument('--snapshot_interval', type=int, default=10000,
+                        help='Interval of snapshot (default=10000)')
     parser.add_argument('--evaluation_interval', type=int, default=50000,
-                        help='Interval of evaluation')
-    parser.add_argument('--out_image_interval', type=int, default=12500,
-                        help='Interval of evaluation')
+                        help='Interval of evaluation (default=50000)')
+    parser.add_argument('--out_image_interval', type=int, default=10000,
+                        help='Interval of evaluation (default=10000)')
     parser.add_argument('--stage_interval', type=int, default=400000,
-                        help='Interval of stage progress')
+                        help='Interval of stage progress (default=400000)')
     parser.add_argument('--display_interval', type=int, default=100,
-                        help='Interval of displaying log to console')
+                        help='Interval of displaying log to console (default=100)')
     parser.add_argument('--n_dis', type=int, default=1,
-                        help='number of discriminator update per generator update')
+                        help='number of discriminator update per generator update (default=1)')
     parser.add_argument('--lam', type=float, default=10,
-                        help='gradient penalty')
+                        help='gradient penalty (default=10)')
     parser.add_argument('--gamma', type=float, default=750,
-                        help='gradient penalty')
+                        help='gradient penalty (default=750)')
     parser.add_argument('--pooling_comp', type=float, default=1.0,
-                        help='compensation')
+                        help='compensation (default=1.0)')
     parser.add_argument('--pretrained_generator', type=str, default='')
     parser.add_argument('--pretrained_discriminator', type=str, default='')
-    parser.add_argument('--initial_stage', type=float, default=0.0)
-    parser.add_argument('--generator_smoothing', type=float, default=0.999)
+    parser.add_argument('--initial_stage (default=0.0)',
+                        type=float, default=0.0)
+    parser.add_argument(
+        '--generator_smoothing (default=0.999)', type=float, default=0.999)
 
     args = parser.parse_args()
     record_setting(args.out)
