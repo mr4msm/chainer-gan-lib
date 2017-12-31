@@ -147,7 +147,11 @@ def main():
         max_stage=args.max_stage,
         size=args.size
     )
-    discriminator = Discriminator(pooling_comp=args.pooling_comp)
+    discriminator = Discriminator(
+        ch=args.max_ch,
+        max_stage=args.max_stage,
+        pooling_comp=args.pooling_comp
+    )
 
     # select GPU
     if args.gpu >= 0:
