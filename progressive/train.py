@@ -86,6 +86,10 @@ def main():
     )
     parser.add_argument('--batchsize', '-b', type=int, default=16)
     parser.add_argument('--max_iter', '-m', type=int, default=400000)
+    parser.add_argument('--max_ch', '-c', type=int, default=512)
+    parser.add_argument('--n_hidden', type=int, default=512)
+    parser.add_argument('--size', type=int, default=128)
+    parser.add_argument('--max_stage', '-s', type=int, default=10)
     parser.add_argument('--gpu', '-g', type=int, default=0,
                         help='GPU ID (negative value indicates CPU)')
     parser.add_argument('--out', '-o', default='result',
@@ -123,8 +127,18 @@ def main():
     if args.gpu >= 0:
         chainer.cuda.get_device_from_id(args.gpu).use()
 
-    generator = Generator()
-    generator_smooth = Generator()
+    generator = Generator(
+        n_hidden=args.n_hidden,
+        ch=args.max_ch,
+        max_stage=args.max_stage,
+        size=args.size
+    )
+    generator_smooth = Generator(
+        n_hidden=args.n_hidden,
+        ch=args.max_ch,
+        max_stage=args.max_stage,
+        size=args.size
+    )
     discriminator = Discriminator(pooling_comp=args.pooling_comp)
 
     # select GPU
@@ -170,7 +184,8 @@ def main():
         gamma=args.gamma,
         smoothing=args.generator_smoothing,
         initial_stage=args.initial_stage,
-        stage_interval=args.stage_interval
+        stage_interval=args.stage_interval,
+        size=args.size
     )
 
     trainer = training.Trainer(updater, (max_iter, 'iteration'), out=args.out)

@@ -89,7 +89,7 @@ class Generator(chainer.Chain):
         self.max_stage = max_stage
         self.size = size
         with self.init_scope():
-            #self.c0 = EqualizedDeconv2d(n_hidden, ch, 4, 1, 0)
+            # self.c0 = EqualizedDeconv2d(n_hidden, ch, 4, 1, 0)
             self.c0 = EqualizedConv2d(n_hidden, ch, 4, 1, 3)
             self.c1 = EqualizedConv2d(ch, ch, 3, 1, 1)
             self.out0 = EqualizedConv2d(ch, 3, 1, 1, 0)

@@ -17,6 +17,7 @@ from common.misc import soft_copy_param
 class Updater(chainer.training.StandardUpdater):
     def __init__(self, *args, **kwargs):
         self.gen, self.dis, self.gs = kwargs.pop('models')
+        self.size = kwargs.pop('size')
         self.n_dis = kwargs.pop('n_dis')
         self.lam = kwargs.pop('lam')
         self.gamma = kwargs.pop('gamma')
@@ -43,17 +44,17 @@ class Updater(chainer.training.StandardUpdater):
             self.stage = self.counter / self.stage_interval
 
             if math.floor(self.stage) % 2 == 0:
-                reso = min(128, 4 * 2**(((math.floor(self.stage) + 1) // 2)))
-                scale = max(1, 128 // reso)
+                reso = min(self.size, 4 * 2**(((math.floor(self.stage) + 1) // 2)))
+                scale = max(1, self.size // reso)
                 if scale > 1:
                     x_real = F.average_pooling_2d(x_real, scale, scale, 0)
             else:
                 alpha = self.stage - math.floor(self.stage)
-                reso_low = min(128, 4 * 2**(((math.floor(self.stage)) // 2)))
+                reso_low = min(self.size, 4 * 2**(((math.floor(self.stage)) // 2)))
                 reso_high = min(
-                    128, 4 * 2**(((math.floor(self.stage) + 1) // 2)))
-                scale_low = max(1, 128 // reso_low)
-                scale_high = max(1, 128 // reso_high)
+                    self.size, 4 * 2**(((math.floor(self.stage) + 1) // 2)))
+                scale_low = max(1, self.size // reso_low)
+                scale_high = max(1, self.size // reso_high)
                 if scale_low > 1:
                     x_real_low = F.unpooling_2d(
                         F.average_pooling_2d(x_real, scale_low, scale_low, 0),
