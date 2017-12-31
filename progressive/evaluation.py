@@ -13,7 +13,8 @@ from chainer import serializers
 import chainer.functions as F
 
 sys.path.append(os.path.dirname(__file__))
-sys.path.append(os.path.abspath(os.path.dirname(__file__)) + os.path.sep + os.path.pardir)
+sys.path.append(os.path.abspath(os.path.dirname(__file__)) +
+                os.path.sep + os.path.pardir)
 from common.inception.inception_score import inception_score, Inception
 
 
@@ -63,7 +64,8 @@ def sample_generate(gen, dst, rows=10, cols=10, seed=0):
         x = x.reshape((rows * h, cols * w, 3))
 
         preview_dir = '{}/preview'.format(dst)
-        preview_path = preview_dir + '/image{:0>8}.png'.format(trainer.updater.iteration)
+        preview_path = preview_dir + \
+            '/image{:0>8}.png'.format(trainer.updater.iteration)
         if not os.path.exists(preview_dir):
             os.makedirs(preview_dir)
         Image.fromarray(x).save(preview_path)
@@ -72,7 +74,8 @@ def sample_generate(gen, dst, rows=10, cols=10, seed=0):
 
 
 def load_inception_model():
-    infile = "%s/../common/inception/inception_score.model"%os.path.dirname(__file__)
+    infile = '%s/../common/inception/inception_score.model' % os.path.dirname(
+        __file__)
     model = Inception()
     serializers.load_hdf5(infile, model)
     model.to_gpu()
@@ -89,16 +92,17 @@ def calc_inception(gen, batchsize=100):
 
         n_ims = 50000
         for i in range(0, n_ims, batchsize):
-            print("calc_inception generating: %d"%i)
+            print('calc_inception generating: %d' % i)
             z = Variable(xp.asarray(gen.make_hidden(batchsize)))
             with chainer.using_config('train', False), chainer.using_config('enable_backprop', False):
                 x = gen(z, stage=trainer.updater.stage)
             x = chainer.cuda.to_cpu(x.data)
-            x = np.asarray(np.clip(x * 127.5 + 127.5, 0.0, 255.0), dtype=np.uint8)
+            x = np.asarray(np.clip(x * 127.5 + 127.5,
+                                   0.0, 255.0), dtype=np.uint8)
             ims.append(x)
         ims = np.asarray(ims)
         _, _, _, h, w = ims.shape
-        ims = ims.reshape((n_ims, 3, h, w)).astype("f")
+        ims = ims.reshape((n_ims, 3, h, w)).astype('f')
 
         mean, std = inception_score(model, ims)
 
@@ -149,13 +153,15 @@ def get_mean_cov(model, ims, batch_size=100):
 
     return mean, cov
 
-def FID(m0,c0,m1,c1):
+
+def FID(m0, c0, m1, c1):
     ret = 0
-    ret += np.sum((m0-m1)**2)
-    ret += np.trace(c0 + c1 - 2.0*scipy.linalg.sqrtm(np.dot(c0, c1)))
+    ret += np.sum((m0 - m1)**2)
+    ret += np.trace(c0 + c1 - 2.0 * scipy.linalg.sqrtm(np.dot(c0, c1)))
     return np.real(ret)
 
-def calc_FID(gen, batchsize=100, stat_file="%s/../common/cifar-10-fid.npz"%os.path.dirname(__file__)):
+
+def calc_FID(gen, batchsize=100, stat_file='%s/../common/cifar-10-fid.npz' % os.path.dirname(__file__)):
     @chainer.training.make_extension()
     def evaluation(trainer):
         model = load_inception_model()
@@ -169,14 +175,15 @@ def calc_FID(gen, batchsize=100, stat_file="%s/../common/cifar-10-fid.npz"%os.pa
             with chainer.using_config('train', False), chainer.using_config('enable_backprop', False):
                 x = gen(z, stage=trainer.updater.stage)
             x = chainer.cuda.to_cpu(x.data)
-            x = np.asarray(np.clip(x * 127.5 + 127.5, 0.0, 255.0), dtype="f")
+            x = np.asarray(np.clip(x * 127.5 + 127.5, 0.0, 255.0), dtype='f')
             xs.append(x)
         xs = np.asarray(xs)
         _, _, _, h, w = xs.shape
 
         with chainer.using_config('train', False), chainer.using_config('enable_backprop', False):
-            mean, cov = get_mean_cov(model, np.asarray(xs).reshape((-1, 3, h, w)))
-        fid = FID(stat["mean"], stat["cov"], mean, cov)
+            mean, cov = get_mean_cov(
+                model, np.asarray(xs).reshape((-1, 3, h, w)))
+        fid = FID(stat['mean'], stat['cov'], mean, cov)
 
         chainer.reporter.report({
             'FID': fid,
