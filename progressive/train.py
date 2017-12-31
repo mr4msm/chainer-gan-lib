@@ -120,10 +120,10 @@ def main():
                         help='compensation (default=1.0)')
     parser.add_argument('--pretrained_generator', type=str, default='')
     parser.add_argument('--pretrained_discriminator', type=str, default='')
-    parser.add_argument('--initial_stage (default=0.0)',
-                        type=float, default=0.0)
-    parser.add_argument(
-        '--generator_smoothing (default=0.999)', type=float, default=0.999)
+    parser.add_argument('--initial_stage',
+                        type=float, default=0.0, help='default=0.0')
+    parser.add_argument('--generator_smoothing',
+                        type=float, default=0.999, help='default=0.999')
 
     args = parser.parse_args()
     record_setting(args.out)
