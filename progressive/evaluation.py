@@ -65,7 +65,7 @@ def sample_generate(gen, dst, rows=10, cols=10, seed=0):
 
         preview_dir = '{}/preview'.format(dst)
         preview_path = preview_dir + \
-            '/image{:0>8}.png'.format(trainer.updater.iteration)
+            '/image_{:09d}.png'.format(trainer.updater.iteration)
         if not os.path.exists(preview_dir):
             os.makedirs(preview_dir)
         Image.fromarray(x).save(preview_path)

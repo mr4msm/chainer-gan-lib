@@ -203,15 +203,15 @@ def main():
     trainer = training.Trainer(updater, (max_iter, 'iteration'), out=args.out)
 
     trainer.extend(extensions.snapshot_object(
-        generator, 'generator_{.updater.iteration}.npz'),
+        generator, 'generator_{.updater.iteration:09d}.npz'),
         trigger=(args.snapshot_interval, 'iteration')
     )
     trainer.extend(extensions.snapshot_object(
-        generator_smooth, 'generator_smooth_{.updater.iteration}.npz'),
+        generator_smooth, 'smoothed_generator_{.updater.iteration:09d}.npz'),
         trigger=(args.snapshot_interval, 'iteration')
     )
     trainer.extend(extensions.snapshot_object(
-        discriminator, 'discriminator_{.updater.iteration}.npz'),
+        discriminator, 'discriminator_{.updater.iteration:09d}.npz'),
         trigger=(args.snapshot_interval, 'iteration')
     )
     trainer.extend(
