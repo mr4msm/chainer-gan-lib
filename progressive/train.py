@@ -6,6 +6,7 @@ import chainer
 from chainer import training
 from chainer.training import extension
 from chainer.training import extensions
+from datetime import datetime as dt
 
 sys.path.append(os.path.dirname(__file__))
 sys.path.append(os.path.abspath(os.path.dirname(__file__)) +
@@ -128,7 +129,7 @@ def main():
     args = parser.parse_args()
     record_setting(args.out)
 
-    report_keys = ['stage', 'loss_dis', 'loss_gp', 'loss_gen',
+    report_keys = ['elapsed_time', 'stage', 'loss_dis', 'loss_gp', 'loss_gen',
                    'g', 'inception_mean', 'inception_std', 'FID']
     max_iter = args.max_iter
 
@@ -218,8 +219,10 @@ def main():
         extensions.LogReport(keys=report_keys,
                              trigger=(args.display_interval, 'iteration'))
     )
-    trainer.extend(extensions.PrintReport(report_keys),
-                   trigger=(args.display_interval, 'iteration'))
+    trainer.extend(
+        extensions.PrintReport(report_keys),
+        trigger=(args.display_interval, 'iteration')
+    )
     trainer.extend(
         sample_generate(generator_smooth, args.out),
         trigger=(args.out_image_interval, 'iteration'),
@@ -227,7 +230,7 @@ def main():
     )
     trainer.extend(
         sample_generate_light(generator_smooth, args.out),
-        trigger=(args.evaluation_interval // 10, 'iteration'),
+        trigger=(args.out_image_interval // 10, 'iteration'),
         priority=extension.PRIORITY_WRITER
     )
     trainer.extend(
@@ -243,6 +246,7 @@ def main():
     trainer.extend(extensions.ProgressBar(update_interval=10))
 
     # Run the training
+    print(dt.now())
     trainer.run()
 
 
